@@ -21,8 +21,8 @@
     }
 
     body.fade-out {
-            opacity: 0;
-        }
+        opacity: 0;
+    }
 
     .timer {
         position: absolute;
@@ -63,8 +63,12 @@
         position: absolute;
         width: 100px;
         height: 150px;
-        background-color: #ff0000;
-        border: 2px solid black;
+        background: rgba(255, 0, 0, 0.2);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         cursor: pointer;
     }
 
@@ -109,13 +113,12 @@
         font-family: monospace;
     }
 
-    #restart{
-     position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: none;
-}
-
+    #restart {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        display: none;
+    }
 </style>
 
 <body>
@@ -138,89 +141,89 @@
 
 
     <script>
-    const game1 = document.getElementById('game1');
-    const timerDisplay = document.getElementById('timer');
-    const restartButton = document.getElementById('restart');
-    const nextButton = document.getElementById('next');
-    const exitButton = document.getElementById('exit');
-    const errorSound = document.getElementById('error-sound');
-    const buttonSound = document.getElementById('button-sound');
-    const errorCount = 35;
-    let timeLeft;
-    let timerInterval;
+        const game1 = document.getElementById('game1');
+        const timerDisplay = document.getElementById('timer');
+        const restartButton = document.getElementById('restart');
+        const nextButton = document.getElementById('next');
+        const exitButton = document.getElementById('exit');
+        const errorSound = document.getElementById('error-sound');
+        const buttonSound = document.getElementById('button-sound');
+        const errorCount = 35;
+        let timeLeft;
+        let timerInterval;
 
-    function playButtonSound() {
-        buttonSound.currentTime = 0;
-        buttonSound.play();
-    }
-
-    function startGame() {
-        game1.innerHTML = '<div class="memory">BIG MEMORY</div>';
-        timeLeft = 20;
-        timerDisplay.textContent = `Time left: ${timeLeft}s`;
-        nextButton.style.display = 'none';
-        restartButton.style.display = 'none';
-
-        for (let i = 0; i < errorCount; i++) {
-            const error = document.createElement('div');
-            error.classList.add('error');
-            error.style.top = Math.random() * (600 - 150) + 'px';
-            error.style.left = Math.random() * (600 - 100) + 'px';
-
-            error.addEventListener('click', () => {
-                errorSound.currentTime = 0;
-                errorSound.play();
-                error.remove();
-                if (game1.querySelectorAll('.error').length === 0) {
-                    stopTimer();
-                    alert(`Memory recovered.`);
-                    nextButton.style.display = 'inline-block';
-                }
-            });
-
-            game1.appendChild(error);
+        function playButtonSound() {
+            buttonSound.currentTime = 0;
+            buttonSound.play();
         }
 
-        startTimer();
-    }
-
-    function startTimer() {
-        clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-            timeLeft--;
+        function startGame() {
+            game1.innerHTML = '<div class="memory">BIG MEMORY</div>';
+            timeLeft = 20;
             timerDisplay.textContent = `Time left: ${timeLeft}s`;
+            nextButton.style.display = 'none';
+            restartButton.style.display = 'none';
 
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                alert('Failed to recover memory.');
-                restartButton.style.display = 'inline-block';
+            for (let i = 0; i < errorCount; i++) {
+                const error = document.createElement('div');
+                error.classList.add('error');
+                error.style.top = Math.random() * (600 - 150) + 'px';
+                error.style.left = Math.random() * (600 - 100) + 'px';
+
+                error.addEventListener('click', () => {
+                    errorSound.currentTime = 0;
+                    errorSound.play();
+                    error.remove();
+                    if (game1.querySelectorAll('.error').length === 0) {
+                        stopTimer();
+                        alert(`Memory recovered.`);
+                        nextButton.style.display = 'inline-block';
+                    }
+                });
+
+                game1.appendChild(error);
             }
-        }, 1000);
-    }
 
-    function stopTimer() {
-        clearInterval(timerInterval);
-    }
+            startTimer();
+        }
 
-    restartButton.addEventListener('click', () => {
-        playButtonSound();
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `Time left: ${timeLeft}s`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Failed to recover memory.');
+                    restartButton.style.display = 'inline-block';
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        restartButton.addEventListener('click', () => {
+            playButtonSound();
+            startGame();
+        });
+
+        nextButton.addEventListener('click', () => {
+            playButtonSound();
+        });
+
+        exitButton.addEventListener('click', () => {
+            playButtonSound();
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = 'main_title.html';
+            }, 1000);
+        });
+
         startGame();
-    });
-
-    nextButton.addEventListener('click', () => {
-        playButtonSound();
-    });
-
-    exitButton.addEventListener('click', () => {
-        playButtonSound();
-        document.body.classList.add('fade-out');
-        setTimeout(() => {
-            window.location.href = 'main_title.html';
-        }, 1000);
-    });
-
-    startGame();
-</script>
+    </script>
 
 </body>
 

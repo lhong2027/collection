@@ -62,10 +62,14 @@
 
         .error {
             position: absolute;
-            width: 100px;
-            height: 150px;
-            background-color: #ff0000;
-            border: 2px solid black;
+            width: 170px;
+            height: 220px;
+            background: rgba(255, 0, 0, 0.2);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             cursor: pointer;
             animation: moveX 10s linear infinite alternate, moveY 12s linear infinite alternate;
         }
@@ -167,7 +171,7 @@
         const exitButton = document.getElementById('exit');
         const errorSound = document.getElementById('error-sound');
         const buttonSound = document.getElementById('button-sound');
-        const errorCount = 20;
+        const errorCount = 22;
         let timeLeft;
         let timerInterval;
 
@@ -178,7 +182,7 @@
 
         function startGame() {
             game1.innerHTML = '<div class="memory">BIG FLOATING MEMORY</div>';
-            timeLeft = 20;
+            timeLeft = 22;
             timerDisplay.textContent = `Time left: ${timeLeft}s`;
             nextButton.style.display = 'none';
             restartButton.style.display = 'none';
