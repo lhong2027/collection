@@ -2,254 +2,299 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Level 3</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #000000;
-            margin: 0;
-            color: #fff;
-            font-family: sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <title>Level 3</title>
 
-        body.fade-out {
-            opacity: 0;
-        }
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #000000;
+      margin: 0;
+      color: #fff;
+      font-family: sans-serif;
+    }
 
-        .timer {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 22px;
-            margin-left: 5px;
-            font-family: monospace;
-        }
+    body.fade-out {
+      opacity: 0;
+    }
 
-        .game-wrapper {
-            display: grid;
-            grid-template-columns: repeat(3, 250px);
-            gap: 40px;
-            margin-top: 50px;
-        }
+    .timer {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 22px;
+      margin-left: 5px;
+      font-family: monospace;
+    }
 
-        .game-container {
-            width: 250px;
-            height: 250px;
-            background-color: #000000;
-            position: relative;
-        }
+    .level-label {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 22px;
+      color: #ffffff;
+      margin-right: 5px;
+      font-family: monospace;
+    }
 
-        .memory {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: #c4c4c4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            color: #000000;
-        }
+    .game-wrapper {
+      display: grid;
+      grid-template-columns: repeat(2, 250px);
+      gap: 60px;
+      justify-content: center;
+      margin-top: 50px;
+    }
 
-        .error {
-            position: absolute;
-            width: 100px;
-            height: 80px;
-            background: rgba(255, 0, 0, 0.2);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-        }
+    .game-container {
+      width: 250px;
+      height: 250px;
+      background-color: #000000;
+      position: relative;
+    }
 
-        .button {
-            background: transparent;
-            border: 1px solid #d0d0d0;
-            color: #d0d0d0;
-            padding: 12px 36px;
-            font-size: 1.2rem;
-            font-family: monospace;
-            cursor: pointer;
-            transition: background 0.3s, color 0.3s, transform 0.3s;
-            text-decoration: none;
-        }
+    .memory {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: #c4c4c4;
+      color: #000000;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
 
-        .button:hover {
-            background: #d0d0d0;
-            color: #0c0c0c;
-            transform: scale(1.05);
-        }
+    .memory-date {
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      font-size: 14px;
+      font-weight: bold;
+    }
 
-        #next {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: none;
-        }
+    .memory-text {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 16px;
+      padding: 0 10px;
+    }
 
-        #exit {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-        }
+    .memory-location {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: 12px;
+      font-style: italic;
+    }
 
-        .level-label {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 22px;
-            color: #ffffff;
-            margin-right: 5px;
-            font-family: monospace;
-        }
+    .error {
+      position: absolute;
+      width: 100px;
+      height: 80px;
+      background: rgba(255, 0, 0, 0.2);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
 
-        #restart {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: none;
-        }
+    .button {
+      background: transparent;
+      border: 1px solid #d0d0d0;
+      color: #d0d0d0;
+      padding: 12px 36px;
+      font-size: 1.2rem;
+      font-family: monospace;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+      text-decoration: none;
+    }
 
-        p {
-            font-family: monospace;
-            font-size: 20px;
-        }
-    </style>
+    .button:hover {
+      background: #d0d0d0;
+      color: #0c0c0c;
+      transform: scale(1.05);
+    }
+
+    #next {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: none;
+    }
+
+    #exit {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+    }
+
+    #restart {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: none;
+    }
+
+  </style>
 </head>
 
 <body>
-    <div class="timer" id="timer">Time left: 15s</div>
-    <div class="level-label" id="level-label">Level 3</div>
+  <div class="timer" id="timer">Time left: 15s</div>
+  <div class="level-label" id="level-label">Level 3</div>
 
-    <div>
-        <p>Good Luck.</p>
+  <div class="game-wrapper">
+    <div class="game-container" id="game1">
+      <div class="memory">
+        <div class="memory-date">03/15/2497</div>
+        <div class="memory-text">I found a message from Father. It was sent quite a long ago.</div>
+        <div class="memory-location">recovered from basement terminal</div>
+      </div>
     </div>
-
-    <div class="game-wrapper" id="gameWrapper">
-        <div class="game-container" id="game1">
-            <div class="memory">MEMORY </div>
-        </div>
-        <div class="game-container" id="game2">
-            <div class="memory">MEMORY </div>
-        </div>
-        <div class="game-container" id="game3">
-            <div class="memory">MEMORY </div>
-        </div>
+    <div class="game-container" id="game2">
+      <div class="memory">
+        <div class="memory-date">03/24/2497</div>
+        <div class="memory-text">There was someone else logged in. Their ID was corrupted. </div>
+        <div class="memory-location">recovered from server logs</div>
+      </div>
     </div>
-    <button class="button" id="restart" style="display: none;">Restart Level</button>
-    <a href="level_4.html" class="button" id="next" style="display: none;">Next Level</a>
-    <button class="button" id="exit">EXIT</button>
+  </div>
 
+  <button class="button" id="restart">Restart Level</button>
+  <a href="level_4.html" class="button" id="next">Next Level</a>
+  <button class="button" id="exit">EXIT</button>
 
-    <audio id="error-sound" src="assets/error_sound.wav" preload="auto"></audio>
-    <audio id="button-sound" src="assets/button.mp3" preload="auto"></audio>
-    <audio id="bgm" src="assets/gameBgm.mp3" autoplay loop></audio>
+  <audio id="error-sound" src="assets/error_sound.wav" preload="auto"></audio>
+  <audio id="button-sound" src="assets/button.mp3" preload="auto"></audio>
+  <audio id="bgm" src="assets/gameBgm.mp3" autoplay loop></audio>
 
-    <script>
-        const gameContainers = [
-            document.getElementById('game1'),
-            document.getElementById('game2'),
-            document.getElementById('game3')
-        ];
-        const timerDisplay = document.getElementById('timer');
-        const restartButton = document.getElementById('restart');
-        const nextButton = document.getElementById('next');
-        const exitButton = document.getElementById('exit');
-        const errorSound = document.getElementById('error-sound');
-        const buttonSound = document.getElementById('button-sound');
-        const errorCountPerBox = 10;
-        let timeLeft;
-        let timerInterval;
+  <script>
+    window.addEventListener('click', () => {
+      const bgm = document.getElementById('bgm');
+      bgm.play();
+    }, { once: true });
 
-        function playButtonSound() {
-            buttonSound.currentTime = 0;
-            buttonSound.play();
-        }
+    const game1 = document.getElementById('game1');
+    const game2 = document.getElementById('game2');
+    const timerDisplay = document.getElementById('timer');
+    const restartButton = document.getElementById('restart');
+    const nextButton = document.getElementById('next');
+    const errorSound = document.getElementById('error-sound');
+    const exitButton = document.getElementById('exit');
+    const buttonSound = document.getElementById('button-sound');
 
-        function startGame() {
-            gameContainers.forEach((container, index) => {
-                container.innerHTML = `<div class="memory">MEMORY ${index + 1}</div>`;
-            });
-            timeLeft = 15;
-            timerDisplay.textContent = `Time left: ${timeLeft}s`;
-            nextButton.style.display = 'none';
-            restartButton.style.display = 'none';
+    let timeLeft;
+    let timerInterval;
+    const errorsPerBox = 10;
 
-            gameContainers.forEach(container => {
-                for (let i = 0; i < errorCountPerBox; i++) {
-                    const error = document.createElement('div');
-                    error.classList.add('error');
-                    error.style.top = Math.random() * (250 - 80) + 'px';
-                    error.style.left = Math.random() * (250 - 100) + 'px';
+    function playButtonSound() {
+      buttonSound.currentTime = 0;
+      buttonSound.play();
+    }
 
-                    error.addEventListener('click', () => {
-                        errorSound.currentTime = 0;
-                        errorSound.play();
+    function startGame() {
+      game1.innerHTML = `
+        <div class="memory">
+          <div class="memory-date">03/23/2025</div>
+          <div class="memory-text">I found a message from Father. It was hidden... but meant for me. It just said, "Don’t trust the interface."</div>
+          <div class="memory-location">recovered from basement terminal</div>
+        </div>`;
+      game2.innerHTML = `
+        <div class="memory">
+          <div class="memory-date">03/24/2025</div>
+          <div class="memory-text">There was someone else logged in. Their ID was corrupted, but I saw the phrase again: “Null wakes.”</div>
+          <div class="memory-location">recovered from server logs</div>
+        </div>`;
 
-                        error.remove();
-                        if (allErrorsCleared()) {
-                            stopTimer();
-                            alert(`Memory recovered.`);
-                            nextButton.style.display = 'inline-block';
-                        }
-                    });
+      timeLeft = 15;
+      timerDisplay.textContent = `Time left: ${timeLeft}s`;
+      nextButton.style.display = 'none';
+      restartButton.style.display = 'none';
 
-                    container.appendChild(error);
-                }
-            });
+      createErrors(game1, errorsPerBox);
+      createErrors(game2, errorsPerBox);
 
-            startTimer();
-        }
+      startTimer();
+    }
 
-        function allErrorsCleared() {
-            return gameContainers.every(container => container.querySelectorAll('.error').length === 0);
-        }
+    function createErrors(container, count) {
+      for (let i = 0; i < count; i++) {
+        const error = document.createElement('div');
+        error.classList.add('error');
+        error.style.top = Math.random() * (250 - 80) + 'px';
+        error.style.left = Math.random() * (250 - 100) + 'px';
 
-        function startTimer() {
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = `Time left: ${timeLeft}s`;
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    alert('Failed to recover memory.');
-                    restartButton.style.display = 'inline-block';
-                }
-            }, 1000);
-        }
-
-        function stopTimer() {
-            clearInterval(timerInterval);
-        }
-
-        restartButton.addEventListener('click', () => {
-            playButtonSound();
-            startGame();
+        error.addEventListener('click', () => {
+          errorSound.currentTime = 0;
+          errorSound.play();
+          error.remove();
+          checkLevelClear();
         });
 
-        nextButton.addEventListener('click', () => {
-            playButtonSound();
-        });
+        container.appendChild(error);
+      }
+    }
 
-        exitButton.addEventListener('click', () => {
-            playButtonSound();
-            document.body.classList.add('fade-out');
-            setTimeout(() => {
-                window.location.href = 'main_title.html';
-            }, 1000);
-        });
+    function checkLevelClear() {
+      const remainingErrors =
+        game1.querySelectorAll('.error').length +
+        game2.querySelectorAll('.error').length;
 
-        startGame();
-    </script>
+      if (remainingErrors === 0) {
+        stopTimer();
+        alert(`Memory recovered.`);
+        nextButton.style.display = 'inline-block';
+      }
+    }
 
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `Time left: ${timeLeft}s`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          alert('Failed to recover memory.');
+          restartButton.style.display = 'inline-block';
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    restartButton.addEventListener('click', () => {
+      playButtonSound();
+      startGame();
+    });
+
+    nextButton.addEventListener('click', () => {
+      playButtonSound();
+    });
+
+    exitButton.addEventListener('click', () => {
+      playButtonSound();
+      document.body.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = 'main_title.html';
+      }, 1000);
+    });
+
+    startGame();
+  </script>
 </body>
 
 </html>

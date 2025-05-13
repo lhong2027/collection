@@ -1,12 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>End</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      transition: opacity 1s;
+      position: relative;
+    }
 
- 
+    body::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      animation: scanline 0.5s linear infinite;
+    }
+
+    @keyframes scanline {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    body.fade-out {
+      opacity: 0;
+    }
+
+    #game-text {
+      color: #e0e0e0;
+      font-family: monospace;
+      font-size: 20px;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+      min-height: 80px;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    #next-button {
+      background: transparent;
+      border: 1px solid #d0d0d0;
+      color: #d0d0d0;
+      padding: 8px 8px;
+      font-size: 10px;
+      font-family: monospace;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      margin-top: 30px;
+      margin-left: 700px;
+    }
+
+    #next-button:hover {
+      background: #d0d0d0;
+      color: #0c0c0c;
+    }
+
+    #return-button {
+      display: none;
+      background: transparent;
+      border: 1px solid #d0d0d0;
+      color: #d0d0d0;
+      padding: 12px 36px;
+      font-size: 1.2rem;
+      font-family: monospace;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      margin-top: 30px;
+    }
+
+    #return-button:hover {
+      background: #d0d0d0;
+      color: #0c0c0c;
+    }
+  </style>
 </head>
 
 <body>
@@ -16,20 +94,30 @@
   <button id="next-button">></button>
   <button id="return-button">Return to Main Screen</button>
 
+  <audio id="button-sound" src="assets/button.mp3" preload="auto"></audio>
+  <audio id="next-button-sound" src="assets/next-button.mp3" preload="auto"></audio>
+
   <script>
     const letters = "abcdefghijklmnopqrstuvwxyz1234567890";
     const scriptLines = [
       "LOADING ...",
-      "There was an error loading the next data collection.",
-      "File could not be accessed due to corrupted data.",
+      "You have succeeded restoring all of the available data files.",
+      "Further file could not be accessed due to corrupted data.",
       "It seems like this is the end.",
-      "Return to main system?",
+      "Now returning to the main system..."
     ];
 
     let currentLine = 0;
     const gameText = document.getElementById("game-text");
     const nextButton = document.getElementById("next-button");
     const returnButton = document.getElementById("return-button");
+    const buttonSound = document.getElementById("button-sound");
+    const nextButtonSound = document.getElementById("next-button-sound");
+
+    function playButtonSound(sound) {
+      sound.currentTime = 0;
+      sound.play();
+    }
 
     function scrambleAndReveal(text, callback) {
       gameText.innerHTML = text.split("").map(char => {
@@ -65,15 +153,16 @@
     }
 
     function showNextLine() {
+      playButtonSound(nextButtonSound);
       if (currentLine < scriptLines.length) {
         const line = scriptLines[currentLine];
         scrambleAndReveal(line, () => {
-          if (line === "Return to main system?") {
+          currentLine++;
+          if (currentLine === scriptLines.length) {
             nextButton.style.display = "none";
             returnButton.style.display = "inline-block";
           }
         });
-        currentLine++;
       } else {
         nextButton.disabled = true;
         nextButton.innerText = "";
@@ -83,17 +172,14 @@
     nextButton.addEventListener('click', showNextLine);
 
     returnButton.addEventListener('click', () => {
-      // Add the fade-out animation class
+      playButtonSound(buttonSound);
       document.body.classList.add('fade-out');
-
-      // After the animation duration (1s), redirect to index.html
       setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1000);  // 1000 ms to match the fade-out duration
+        window.location.href = 'main_title.html';
+      }, 1000);
     });
 
     showNextLine();
-
   </script>
 
 </body>
