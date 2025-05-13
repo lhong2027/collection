@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>End</title>
+  <link rel="stylesheet" href="style.css">
+
+ 
+</head>
+
+<body>
+
+  <div id="game-text"></div>
+
+  <button id="next-button">></button>
+  <button id="return-button">Return to Main Screen</button>
+
+  <script>
+    const letters = "abcdefghijklmnopqrstuvwxyz1234567890";
+    const scriptLines = [
+      "LOADING ...",
+      "There was an error loading the next data collection.",
+      "File could not be accessed due to corrupted data.",
+      "It seems like this is the end.",
+      "Return to main system?",
+    ];
+
+    let currentLine = 0;
+    const gameText = document.getElementById("game-text");
+    const nextButton = document.getElementById("next-button");
+    const returnButton = document.getElementById("return-button");
+
+    function scrambleAndReveal(text, callback) {
+      gameText.innerHTML = text.split("").map(char => {
+        if (char === " ") return `<span>&nbsp;</span>`;
+        return `<span>${char}</span>`;
+      }).join("");
+
+      const spans = gameText.querySelectorAll('span');
+      const lockTimes = Array.from({ length: spans.length }, () => Math.random() * 900 + 100);
+      const startTime = Date.now();
+
+      const interval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+
+        spans.forEach((span, index) => {
+          if (text[index] === " ") {
+            span.innerHTML = "&nbsp;";
+            return;
+          }
+
+          if (elapsed >= lockTimes[index]) {
+            span.innerText = text[index];
+          } else {
+            span.innerText = letters[Math.floor(Math.random() * letters.length)];
+          }
+        });
+
+        if (Array.from(spans).every((span, index) => span.innerText === text[index] || text[index] === " ")) {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, 50);
+    }
+
+    function showNextLine() {
+      if (currentLine < scriptLines.length) {
+        const line = scriptLines[currentLine];
+        scrambleAndReveal(line, () => {
+          if (line === "Return to main system?") {
+            nextButton.style.display = "none";
+            returnButton.style.display = "inline-block";
+          }
+        });
+        currentLine++;
+      } else {
+        nextButton.disabled = true;
+        nextButton.innerText = "";
+      }
+    }
+
+    nextButton.addEventListener('click', showNextLine);
+
+    returnButton.addEventListener('click', () => {
+      // Add the fade-out animation class
+      document.body.classList.add('fade-out');
+
+      // After the animation duration (1s), redirect to index.html
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);  // 1000 ms to match the fade-out duration
+    });
+
+    showNextLine();
+
+  </script>
+
+</body>
+</html>

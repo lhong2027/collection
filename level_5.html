@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Level 5</title>
+    <link rel="stylesheet" href="game_style.css">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #000000;
+            margin: 0;
+            color: #fff;
+            font-family: sans-serif;
+        }
+
+        body.fade-out {
+            opacity: 0;
+        }
+
+        .timer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 22px;
+            margin-left: 5px;
+            font-family: monospace;
+        }
+
+        .game-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .game-container {
+            width: 600px;
+            height: 600px;
+            background-color: #000000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .memory {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #c4c4c4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            color: #000000;
+            z-index: 0;
+        }
+
+        .error {
+            position: absolute;
+            width: 100px;
+            height: 150px;
+            background-color: #ff0000;
+            border: 2px solid black;
+            cursor: pointer;
+            animation: moveX 10s linear infinite alternate, moveY 12s linear infinite alternate;
+        }
+
+        @keyframes moveX {
+            0% {
+                left: 0;
+            }
+
+            100% {
+                left: 500px;
+            }
+        }
+
+        @keyframes moveY {
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 500px;
+            }
+        }
+
+        #next {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+        }
+
+        #exit {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .button {
+            background: transparent;
+            border: 1px solid #d0d0d0;
+            color: #d0d0d0;
+            padding: 12px 36px;
+            font-size: 1.2rem;
+            font-family: monospace;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s, transform 0.3s;
+            text-decoration: none;
+
+        }
+
+        .button:hover {
+            background: #d0d0d0;
+            color: #0c0c0c;
+            transform: scale(1.05);
+        }
+
+        .level-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 22px;
+            color: #ffffff;
+            margin-right: 5px;
+            font-family: monospace;
+        }
+
+        #restart {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="timer" id="timer">Time left: 20s</div>
+    <div class="level-label" id="level-label">Level 5</div>
+
+    <div class="game-wrapper">
+        <div class="game-container" id="game1">
+            <div class="memory">MEMORY</div>
+        </div>
+    </div>
+    <button class="button" id="restart" style="display: none;">Restart Level</button>
+    <a href="end.html" class="button" id="next" style="display: none;">Next Level</a>
+    <button class="button" id="exit">EXIT</button>
+
+    <audio id="error-sound" src="assets/error_sound.wav" preload="auto"></audio>
+    <audio id="button-sound" src="assets/button.mp3" preload="auto"></audio>
+    <audio id="bgm" src="assets/gameBgm.mp3" autoplay loop></audio>
+
+
+    <script>
+        const game1 = document.getElementById('game1');
+        const timerDisplay = document.getElementById('timer');
+        const restartButton = document.getElementById('restart');
+        const nextButton = document.getElementById('next');
+        const exitButton = document.getElementById('exit');
+        const errorSound = document.getElementById('error-sound');
+        const buttonSound = document.getElementById('button-sound');
+        const errorCount = 20;
+        let timeLeft;
+        let timerInterval;
+
+        function playButtonSound() {
+            buttonSound.currentTime = 0;
+            buttonSound.play();
+        }
+
+        function startGame() {
+            game1.innerHTML = '<div class="memory">BIG FLOATING MEMORY</div>';
+            timeLeft = 20;
+            timerDisplay.textContent = `Time left: ${timeLeft}s`;
+            nextButton.style.display = 'none';
+            restartButton.style.display = 'none';
+
+            for (let i = 0; i < errorCount; i++) {
+                const error = document.createElement('div');
+                error.classList.add('error');
+
+                error.style.top = Math.random() * 500 + 'px';
+                error.style.left = Math.random() * 500 + 'px';
+
+                const durationX = (1 + Math.random() * 5).toFixed(1);
+                const durationY = (2 + Math.random() * 5).toFixed(1);
+                const delayX = (Math.random() * 5).toFixed(1);
+                const delayY = (Math.random() * 5).toFixed(1);
+
+                error.style.animationDuration = `${durationX}s, ${durationY}s`;
+                error.style.animationDelay = `${delayX}s, ${delayY}s`;
+
+                if (Math.random() > 0.5) error.style.animationDirection = 'alternate-reverse, alternate';
+                else error.style.animationDirection = 'alternate, alternate-reverse';
+
+                error.addEventListener('click', () => {
+                    errorSound.currentTime = 0;  // reset sound position to the start
+                    errorSound.play();  // play the error sound
+
+                    error.remove();  // remove the error element after clicking
+                    if (game1.querySelectorAll('.error').length === 0) {
+                        stopTimer();
+                        alert(`Memory recovered.`);
+                        nextButton.style.display = 'inline-block';
+                    }
+                });
+
+                game1.appendChild(error);
+            }
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `Time left: ${timeLeft}s`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Failed to recover memory.');
+                    restartButton.style.display = 'inline-block';
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        restartButton.addEventListener('click', () => {
+            playButtonSound();
+            startGame();
+        });
+
+        nextButton.addEventListener('click', () => {
+            playButtonSound();
+        });
+
+        exitButton.addEventListener('click', () => {
+            playButtonSound();
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = 'main_title.html';
+            }, 1000);
+        });
+
+        startGame();
+    </script>
+
+
+</body>
+
+</html>

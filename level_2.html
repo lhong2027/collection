@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Level 2</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #000000;
+            margin: 0;
+            color: #fff;
+            font-family: sans-serif;
+        }
+
+        body.fade-out {
+            opacity: 0;
+        }
+
+        .timer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 22px;
+            margin: 0;
+            margin-left: 5px;
+            font-family: monospace;
+        }
+
+        .game-wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, 250px);
+            gap: 60px;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .game-container {
+            width: 250px;
+            height: 250px;
+            background-color: #000000;
+            position: relative;
+        }
+
+        .memory {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #c4c4c4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #000000;
+        }
+
+        .error {
+            position: absolute;
+            width: 100px;
+            height: 80px;
+            background-color: #ff0000;
+            border: 2px solid black;
+            cursor: pointer;
+        }
+
+        .button {
+            background: transparent;
+            border: 1px solid #d0d0d0;
+            color: #d0d0d0;
+            padding: 12px 36px;
+            font-size: 1.2rem;
+            font-family: monospace;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s, transform 0.3s;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background: #d0d0d0;
+            color: #0c0c0c;
+            transform: scale(1.05);
+        }
+
+        #next {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+        }
+
+        #exit {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .level-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 22px;
+            color: #ffffff;
+            margin-right: 5px;
+            font-family: monospace;
+        }
+
+        #restart {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+        }
+
+        p {
+            font-family: monospace;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="timer" id="timer">Time left: 15s</div>
+    <div class="level-label" id="level-label">Level 2</div>
+
+    <div>
+        <p>You can view the memories of past as you restore the data.</p>
+    </div>
+
+    <div class="game-wrapper">
+        <div class="game-container" id="game1">
+            <div class="memory">MEMORY 1</div>
+        </div>
+        <div class="game-container" id="game2">
+            <div class="memory">MEMORY 2</div>
+        </div>
+    </div>
+    <button class="button" id="restart" style="display: none;">Restart Level</button>
+    <a href="level_3.html" class="button" id="next" style="display: none;">Next Level</a>
+    <button class="button" id="exit">EXIT</button>
+
+
+    <audio id="error-sound" src="assets/error_sound.wav" preload="auto"></audio>
+    <audio id="button-sound" src="assets/button.mp3" preload="auto"></audio>
+    <audio id="bgm" src="assets/gameBgm.mp3" autoplay loop></audio>
+
+
+    <script>
+        window.addEventListener('click', () => {
+            const bgm = document.getElementById('bgm');
+            bgm.play();
+        }, { once: true });
+
+        const game1 = document.getElementById('game1');
+        const game2 = document.getElementById('game2');
+        const timerDisplay = document.getElementById('timer');
+        const restartButton = document.getElementById('restart');
+        const nextButton = document.getElementById('next');
+        const errorSound = document.getElementById('error-sound');
+        const exitButton = document.getElementById('exit');
+        const buttonSound = document.getElementById('button-sound');
+
+        let timeLeft;
+        let timerInterval;
+        const errorsPerBox = 10;
+
+        function playButtonSound() {
+            buttonSound.currentTime = 0;
+            buttonSound.play();
+        }
+
+        function startGame() {
+            game1.innerHTML = '<div class="memory">MEMORY 1</div>';
+            game2.innerHTML = '<div class="memory">MEMORY 2</div>';
+            timeLeft = 15;
+            timerDisplay.textContent = `Time left: ${timeLeft}s`;
+            nextButton.style.display = 'none';
+            restartButton.style.display = 'none';
+
+            createErrors(game1, errorsPerBox);
+            createErrors(game2, errorsPerBox);
+
+            startTimer();
+        }
+
+        function createErrors(container, count) {
+            for (let i = 0; i < count; i++) {
+                const error = document.createElement('div');
+                error.classList.add('error');
+                error.style.top = Math.random() * (250 - 80) + 'px';
+                error.style.left = Math.random() * (250 - 100) + 'px';
+
+                error.addEventListener('click', () => {
+                    errorSound.currentTime = 0;
+                    errorSound.play();
+
+                    error.remove();
+                    checkLevelClear();
+                });
+
+                container.appendChild(error);
+            }
+        }
+
+        function checkLevelClear() {
+            const remainingErrors =
+                game1.querySelectorAll('.error').length +
+                game2.querySelectorAll('.error').length;
+
+            if (remainingErrors === 0) {
+                stopTimer();
+                alert(`Memory recovered.`);
+                nextButton.style.display = 'inline-block';
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `Time left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Failed to recover memory.');
+                    restartButton.style.display = 'inline-block';
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        restartButton.addEventListener('click', () => {
+            playButtonSound();
+            startGame();
+        });
+
+        nextButton.addEventListener('click', () => {
+            playButtonSound();
+        });
+
+        exitButton.addEventListener('click', () => {
+            playButtonSound();
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = 'main_title.html';
+            }, 1000);
+        });
+
+        startGame();
+    </script>
+
+</body>
+
+</html>

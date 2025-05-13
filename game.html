@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Start</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      transition: opacity 1s;
+      z-index: 0;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      animation: scanline 0.5s linear infinite;
+    }
+
+    @keyframes scanline {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    body.fade-out {
+      opacity: 0;
+    }
+
+    #header {
+      color: #e0e0e0;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 2.7em;
+      letter-spacing: 0.12em;
+      margin-bottom: 100px;
+      text-align: center;
+    }
+
+    #buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    button {
+      background: transparent;
+      border: 1px solid #d0d0d0;
+      color: #d0d0d0;
+      padding: 12px 36px;
+      font-size: 1.2rem;
+      font-family: monospace;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+    }
+
+    button:hover {
+      background: #d0d0d0;
+      color: #0c0c0c;
+      transform: scale(1.05);
+    }
+
+    #game-text {
+      color: #e0e0e0;
+      font-family: monospace;
+      font-size: 20px;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+      min-height: 80px;
+    }
+
+    #next-button {
+      background: transparent;
+      border: 1px solid #d0d0d0;
+      color: #d0d0d0;
+      padding: 8px 8px;
+      font-size: 10px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      margin-top: 30px;
+      margin-left: 700px;
+    }
+
+    #yes-no-buttons button {
+      background: transparent;
+      border: 1px solid #d0d0d0;
+      color: #d0d0d0;
+      padding: 12px 36px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      margin: 10px;
+    }
+
+    #next-button:hover,
+    #yes-no-buttons button:hover {
+      background: #d0d0d0;
+      color: #0c0c0c;
+    }
+
+    #yes-no-buttons {
+      display: none;
+      gap: 20px;
+      flex-direction: row;
+    }
+
+    #return-button {
+      display: none;
+    }
+
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="game-text"></div>
+
+  <button id="next-button">></button>
+
+  <div id="yes-no-buttons">
+    <button id="yes-button">Yes</button>
+    <button id="no-button">No</button>
+  </div>
+
+  <audio id="button-sound" src="assets/button.mp3" preload="auto"></audio>
+  <audio id="next-button-sound" src="assets/next-button.mp3" preload="auto"></audio>
+
+  <script>
+    const letters = "abcdefghijklmnopqrstuvwxyz1234567890";
+    const scriptLines = [
+      "This is the year 5890.",
+      "If you are seeing this, you are probably one of the last existing humans on earth.",
+      "The earth did not recover from its illness, and humanity collapsed.",
+      "This system was used to store data of people from the past.",
+      "The data is corrupted due to error, but you can try to reload the data.",
+      "You must fix the errors to restore the data.",
+      "Would you like to?"
+    ];
+
+    let currentLine = 0;
+    const gameText = document.getElementById("game-text");
+    const nextButton = document.getElementById("next-button");
+    const yesNoButtons = document.getElementById("yes-no-buttons");
+    const yesButton = document.getElementById("yes-button");
+    const noButton = document.getElementById("no-button");
+
+    const buttonSound = document.getElementById('button-sound');
+    const nextButtonSound = document.getElementById('next-button-sound');
+
+    function playButtonSound() {
+      buttonSound.currentTime = 0;
+      buttonSound.play();
+    }
+
+    function playNextButtonSound() {
+      nextButtonSound.currentTime = 0;
+      nextButtonSound.play();
+    }
+
+    function scrambleAndReveal(text, callback) {
+      gameText.innerHTML = text.split("").map(char => {
+        if (char === " ") return `<span>&nbsp;</span>`;
+        return `<span>${char}</span>`;
+      }).join("");
+
+      const spans = gameText.querySelectorAll('span');
+      const lockTimes = Array.from({ length: spans.length }, () => Math.random() * 900 + 100);
+      const startTime = Date.now();
+
+      const interval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+
+        spans.forEach((span, index) => {
+          if (text[index] === " ") {
+            span.innerHTML = "&nbsp;";
+            return;
+          }
+
+          if (elapsed >= lockTimes[index]) {
+            span.innerText = text[index];
+          } else {
+            span.innerText = letters[Math.floor(Math.random() * letters.length)];
+          }
+        });
+
+        if (Array.from(spans).every((span, index) => span.innerText === text[index] || text[index] === " ")) {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, 50);
+    }
+
+    function showNextLine() {
+      playNextButtonSound();
+      if (currentLine < scriptLines.length) {
+        const line = scriptLines[currentLine];
+        scrambleAndReveal(line, () => {
+          if (line === "Would you like to?") {
+            nextButton.style.display = "none";
+            yesNoButtons.style.display = "flex";
+          }
+        });
+        currentLine++;
+      } else {
+        nextButton.disabled = true;
+        nextButton.innerText = "";
+      }
+    }
+
+    nextButton.addEventListener('click', showNextLine);
+
+    yesButton.addEventListener('click', () => {
+      playButtonSound();
+      gameText.innerHTML = "You chose 'Yes'. Reloading data...";
+      yesNoButtons.style.display = "none";
+      setTimeout(() => {
+        window.location.href = 'level_1.html';
+      }, 1500);
+    });
+
+    noButton.addEventListener('click', () => {
+      playButtonSound();
+      gameText.innerHTML = "You chose 'No'. Returning to main file...";
+      yesNoButtons.style.display = "none";
+      setTimeout(() => {
+        window.location.href = 'main_title.html';
+      }, 1500);
+    });
+
+    showNextLine();
+  </script>
+
+</body>
+</html>

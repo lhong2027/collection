@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Collection</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="header"></div>
+
+<div id="buttons">
+    <button onclick="fadeAndGo('game.html')">START</button>
+    <button onclick="openCredits()">CREDITS</button>
+    <button onclick="closeWindow()">EXIT</button>
+</div>
+
+<audio id="bgm" src="assets/mainTitle.mp3" autoplay loop></audio>
+<audio id="button-sound" src="assets/button.mp3" preload="auto"></audio>
+
+<script>
+// letter scramble sourced by chatgpt
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const target = `DATA COLLECTION`;
+const header = document.getElementById("header");
+
+header.innerHTML = target.split("").map(char => {
+  if (char === " ") return `<span>&nbsp;</span>`;
+  return `<span>${char}</span>`;
+}).join("");
+
+const spans = header.querySelectorAll('span');
+const lockTimes = Array.from({ length: spans.length }, () => Math.random() * 1000 + 500);
+const startTime = Date.now();
+
+const interval = setInterval(() => {
+  const elapsed = Date.now() - startTime;
+
+  spans.forEach((span, index) => {
+    if (target[index] === " ") {
+      span.innerHTML = "&nbsp;";
+      return;
+    }
+
+    if (elapsed >= lockTimes[index]) {
+      span.innerText = target[index];
+    } else {
+      span.innerText = letters[Math.floor(Math.random() * letters.length)];
+    }
+  });
+
+  if (Array.from(spans).every((span, index) => span.innerText === target[index] || target[index] === " ")) {
+    clearInterval(interval);
+  }
+}, 60);  
+
+function fadeAndGo(url) {
+  document.body.classList.add('fade-out');
+  setTimeout(() => {
+    location.href = url;
+  }, 1000); 
+}
+
+function closeWindow() {
+  window.close();
+}
+
+function openCredits() {
+  window.open("https://docs.google.com/document/d/1vxXXRAS_e-ZgvRyMysbALg3fj_vSYleZ6mGhx1wM6Ww/edit?usp=sharing", "_blank");
+}
+
+// Button sound effect
+function playButtonSound() {
+  const sound = document.getElementById('button-sound');
+  sound.currentTime = 0;
+  sound.play();
+}
+
+// Attach sound to all button clicks
+document.querySelectorAll('button').forEach(button => {
+  button.addEventListener('click', playButtonSound);
+});
+</script>
+
+</body>
+</html>

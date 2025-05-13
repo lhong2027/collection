@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Collection</title>
+</head>
+
+<style>
+body {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+#header {
+  color: #e0e0e0;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 2.7em;
+  letter-spacing: 0.12em;
+  margin-bottom: 100px;
+  text-align: center;
+}
+
+#buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+button {
+  background: transparent;
+  border: 1px solid #d0d0d0;
+  color: #d0d0d0;
+  padding: 12px 36px;
+  font-size: 1.2rem;
+  font-family: 'Cormorant Garamond', serif;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, transform 0.3s;
+}
+
+
+button:hover {
+  background: #d0d0d0;
+  color: #0c0c0c;
+  transform: scale(1.05);
+}
+
+
+body.fade-out {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+</style>
+
+<body>
+
+<div id="header"></div>
+
+<div id="buttons">
+    <button onclick="fadeAndGo('main_title.html')">ENTER SYSTEM</button>
+</div>
+
+<script>
+
+function fadeAndGo(url) {
+  document.body.classList.add('fade-out');
+  setTimeout(() => {
+    location.href = url;
+  }, 1000); 
+}
+
+</script>
+
+</body>
+</html>
