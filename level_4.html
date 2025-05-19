@@ -4,8 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Level 4</title>
-
     <style>
+        @font-face {
+            font-family: "shareTech";
+            src: url(assets/sharetech-mono/ShareTechMono-Regular.ttf);
+        }
+
         body {
             display: flex;
             flex-direction: column;
@@ -27,8 +31,10 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            font-size: 22px;
-            font-family: monospace;
+            font-size: 37px;
+            margin-left: 5px;
+            font-family: "shareTech";
+            color: red;
         }
 
         .level-label {
@@ -36,7 +42,7 @@
             top: 10px;
             right: 10px;
             font-size: 22px;
-            font-family: monospace;
+            font-family: "shareTech";
         }
 
         .game-wrapper {
@@ -51,7 +57,7 @@
             height: 600px;
             background-color: #000;
             position: relative;
-            border: 1px solid #333;
+            overflow: hidden;
         }
 
         .memory {
@@ -63,9 +69,11 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            font-size: 20px;
+            color: #000;
+            z-index: 0;
             padding: 20px;
             box-sizing: border-box;
-            color: #000;
             font-family: monospace;
         }
 
@@ -94,7 +102,7 @@
         .error {
             position: absolute;
             width: 100px;
-            height: 150px;
+            height: 100px;
             background: rgba(255, 0, 0, 0.2);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
@@ -102,6 +110,35 @@
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             cursor: pointer;
+            animation: moveX 10s linear infinite alternate, moveY 12s linear infinite alternate;
+        }
+
+        @keyframes moveX {
+            0% {
+                left: 0;
+            }
+
+            100% {
+                left: 500px;
+            }
+        }
+
+        @keyframes moveY {
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 500px;
+            }
+        }
+
+        .error.purple {
+            width: 80px;
+            height: 80px;
+            background: rgba(128, 0, 128, 0.4);
+            border-color: rgba(255, 255, 255, 0.5);
+            animation: none;
         }
 
         .button {
@@ -110,7 +147,7 @@
             color: #d0d0d0;
             padding: 12px 36px;
             font-size: 1.2rem;
-            font-family: monospace;
+            font-family: "shareTech";
             cursor: pointer;
             transition: background 0.3s, color 0.3s, transform 0.3s;
             text-decoration: none;
@@ -122,13 +159,7 @@
             transform: scale(1.05);
         }
 
-        #next {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: none;
-        }
-
+        #next,
         #restart {
             position: absolute;
             bottom: 20px;
@@ -145,16 +176,16 @@
 </head>
 
 <body>
-
-    <div class="timer" id="timer">Time left: 20s</div>
-    <div class="level-label" id="level-label">Level 4</div>
+    <div class="timer" id="timer">Time left: 22s</div>
+    <div class="level-label" id="level-label">Level 5</div>
 
     <div class="game-wrapper">
         <div class="game-container" id="game1">
             <div class="memory">
-                <div class="memory-date">07/14/2800</div>
-                <div class="memory-text">It's snowing today...</div>
-                <div class="memory-location">St. Mary’s Hospital</div>
+                <div class="memory-date">12/06/3040</div>
+                <div class="memory-text">It became difficult to differentiate humanoids and actual humans these days.
+                </div>
+                <div class="memory-location">found in abandoned hospital</div>
             </div>
         </div>
     </div>
@@ -175,8 +206,9 @@
         const exitButton = document.getElementById('exit');
         const errorSound = document.getElementById('error-sound');
         const buttonSound = document.getElementById('button-sound');
-        const errorCount = 35;
-        let timeLeft = 20;
+        const redErrors = 22;
+        const purpleErrors = 7;
+
         let timerInterval;
 
         function playButtonSound() {
@@ -185,38 +217,70 @@
         }
 
         function startGame() {
-            // Rebuild the memory block with error overlays
             game1.innerHTML = `
                 <div class="memory">
-                    <div class="memory-date">07/14/2800</div>
-                    <div class="memory-text">It's snowing today...</div>
-                    <div class="memory-location">St. Mary’s Hospital</div>
+                    <div class="memory-date">12/06/3040</div>
+                    <div class="memory-text">t became difficult to differentiate humanoids and actual humans these days.</div>
+                    <div class="memory-location">found in abandoned house</div>
                 </div>
             `;
+            timeLeft = 17;
+            timerDisplay.textContent = `Time left: ${timeLeft}s`;
             nextButton.style.display = 'none';
             restartButton.style.display = 'none';
 
-            for (let i = 0; i < errorCount; i++) {
+            createErrors(game1, redErrors, false);
+            createErrors(game1, purpleErrors, true);
+
+            startTimer();
+        }
+
+        //sourced by chatgpt
+        function createErrors(container, count, isPurple) {
+            for (let i = 0; i < count; i++) {
                 const error = document.createElement('div');
                 error.classList.add('error');
-                error.style.top = Math.random() * (600 - 150) + 'px';
-                error.style.left = Math.random() * (600 - 100) + 'px';
+                if (isPurple) error.classList.add('purple');
+
+                const size = isPurple ? 60 : 100;
+                error.style.top = Math.random() * (600 - size) + 'px';
+                error.style.left = Math.random() * (600 - size) + 'px';
+
+                const durationX = (1 + Math.random() * 5).toFixed(1);
+                const durationY = (2 + Math.random() * 5).toFixed(1);
+                const delayX = (Math.random() * 5).toFixed(1);
+                const delayY = (Math.random() * 5).toFixed(1);
+
+                error.style.animationDuration = `${durationX}s, ${durationY}s`;
+                error.style.animationDelay = `${delayX}s, ${delayY}s`;
+
+                error.style.animationDirection = Math.random() > 0.5 ? 'alternate-reverse, alternate' : 'alternate, alternate-reverse';
+
                 error.addEventListener('click', () => {
                     errorSound.currentTime = 0;
                     errorSound.play();
-                    error.remove();
-                    if (game1.querySelectorAll('.error').length === 0) {
+
+                    if (isPurple) {
                         stopTimer();
-                        alert(`Memory recovered.`);
-                        nextButton.style.display = 'inline-block';
+                        alert('You triggered a corrupted memory. Game over.');
+                        restartButton.style.display = 'inline-block';
+                    } else {
+                        error.remove();
+                        checkLevelClear();
                     }
                 });
-                game1.appendChild(error);
-            }
 
-            timeLeft = 20;
-            timerDisplay.textContent = `Time left: ${timeLeft}s`;
-            startTimer();
+                container.appendChild(error);
+            }
+        }
+
+        function checkLevelClear() {
+            const remainingErrors = game1.querySelectorAll('.error:not(.purple)').length;
+            if (remainingErrors === 0) {
+                stopTimer();
+                alert('Memory recovered.');
+                nextButton.style.display = 'inline-block';
+            }
         }
 
         function startTimer() {
@@ -224,6 +288,7 @@
             timerInterval = setInterval(() => {
                 timeLeft--;
                 timerDisplay.textContent = `Time left: ${timeLeft}s`;
+
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     alert('Failed to recover memory.');

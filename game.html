@@ -6,6 +6,11 @@
   <title>Game Start</title>
   <link rel="stylesheet" href="style.css">
   <style>
+
+    @font-face {
+  font-family: "shareTech";
+  src: url(assets/sharetech-mono/ShareTechMono-Regular.ttf);
+}
     body {
       background-color: black;
       display: flex;
@@ -39,14 +44,6 @@
       opacity: 0;
     }
 
-    #header {
-      color: #e0e0e0;
-      font-family: 'Libre Baskerville', serif;
-      font-size: 2.7em;
-      letter-spacing: 0.12em;
-      margin-bottom: 100px;
-      text-align: center;
-    }
 
     #buttons {
       display: flex;
@@ -60,8 +57,8 @@
       border: 1px solid #d0d0d0;
       color: #d0d0d0;
       padding: 12px 36px;
-      font-size: 1.2rem;
-      font-family: monospace;
+      font-size: 20px;
+      font-family: "shareTech";
       cursor: pointer;
       transition: background 0.3s, color 0.3s, transform 0.3s;
     }
@@ -74,8 +71,8 @@
 
     #game-text {
       color: #e0e0e0;
-      font-family: monospace;
-      font-size: 20px;
+      font-family: "shareTech";
+      font-size: 23px;
       letter-spacing: 0.1em;
       margin-bottom: 20px;
       min-height: 80px;
@@ -86,7 +83,7 @@
       border: 1px solid #d0d0d0;
       color: #d0d0d0;
       padding: 8px 8px;
-      font-size: 10px;
+      font-size: 20px;
       cursor: pointer;
       transition: background 0.3s, color 0.3s;
       margin-top: 30px;
@@ -98,10 +95,11 @@
       border: 1px solid #d0d0d0;
       color: #d0d0d0;
       padding: 12px 36px;
-      font-size: 1.2rem;
+      font-size: 17px;
       cursor: pointer;
       transition: background 0.3s, color 0.3s;
       margin: 10px;
+      font-family: "sharetech";
     }
 
     #next-button:hover,
@@ -177,6 +175,7 @@
       nextButtonSound.play();
     }
 
+    // sourced by chatgpt
     function scrambleAndReveal(text, callback) {
       gameText.innerHTML = text.split("").map(char => {
         if (char === " ") return `<span>&nbsp;</span>`;
@@ -210,6 +209,7 @@
       }, 50);
     }
 
+    // sourced by chatgpt
     function showNextLine() {
       playNextButtonSound();
       if (currentLine < scriptLines.length) {
@@ -229,6 +229,7 @@
 
     nextButton.addEventListener('click', showNextLine);
 
+    // sourced by chatgpt
     yesButton.addEventListener('click', () => {
       playButtonSound();
       gameText.innerHTML = "You chose 'Yes'. Reloading data...";

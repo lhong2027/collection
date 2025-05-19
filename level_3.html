@@ -4,8 +4,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>Level 3</title>
-
   <style>
+    @font-face {
+      font-family: "shareTech";
+      src: url(assets/sharetech-mono/ShareTechMono-Regular.ttf);
+    }
+
     body {
       display: flex;
       flex-direction: column;
@@ -26,9 +30,9 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      font-size: 22px;
-      margin-left: 5px;
-      font-family: monospace;
+      font-size: 37px;
+      font-family: "shareTech";
+      color: red;
     }
 
     .level-label {
@@ -37,13 +41,12 @@
       right: 10px;
       font-size: 22px;
       color: #ffffff;
-      margin-right: 5px;
-      font-family: monospace;
+      font-family: "shareTech";
     }
 
     .game-wrapper {
       display: grid;
-      grid-template-columns: repeat(2, 250px);
+      grid-template-columns: 250px;
       gap: 60px;
       justify-content: center;
       margin-top: 50px;
@@ -62,7 +65,7 @@
       height: 100%;
       background-color: #c4c4c4;
       color: #000000;
-      font-family: monospace;
+      font-family: "shareTech";
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -98,7 +101,7 @@
 
     .error {
       position: absolute;
-      width: 100px;
+      width: 80px;
       height: 80px;
       background: rgba(255, 0, 0, 0.2);
       backdrop-filter: blur(6px);
@@ -109,13 +112,19 @@
       cursor: pointer;
     }
 
+    .error.purple {
+      background: rgba(128, 0, 128, 0.4);
+      width: 60px;
+      height: 60px;
+    }
+
     .button {
       background: transparent;
       border: 1px solid #d0d0d0;
       color: #d0d0d0;
       padding: 12px 36px;
       font-size: 1.2rem;
-      font-family: monospace;
+      font-family: "shareTech";
       cursor: pointer;
       transition: background 0.3s, color 0.3s, transform 0.3s;
       text-decoration: none;
@@ -147,6 +156,10 @@
       display: none;
     }
 
+    p {
+      font-family: "shareTech";
+      font-size: 20px;
+    }
   </style>
 </head>
 
@@ -154,19 +167,16 @@
   <div class="timer" id="timer">Time left: 15s</div>
   <div class="level-label" id="level-label">Level 3</div>
 
+  <div>
+    <p>Do not touch the corrupted data.</p>
+  </div>
+
   <div class="game-wrapper">
     <div class="game-container" id="game1">
       <div class="memory">
-        <div class="memory-date">03/15/2497</div>
-        <div class="memory-text">I found a message from Father. It was sent quite a long ago.</div>
+        <div class="memory-date">03/23/2025</div>
+        <div class="memory-text">I found a message from Father. It told me to not to trust all the data you see.</div>
         <div class="memory-location">recovered from basement terminal</div>
-      </div>
-    </div>
-    <div class="game-container" id="game2">
-      <div class="memory">
-        <div class="memory-date">03/24/2497</div>
-        <div class="memory-text">There was someone else logged in. Their ID was corrupted. </div>
-        <div class="memory-location">recovered from server logs</div>
       </div>
     </div>
   </div>
@@ -186,17 +196,18 @@
     }, { once: true });
 
     const game1 = document.getElementById('game1');
-    const game2 = document.getElementById('game2');
     const timerDisplay = document.getElementById('timer');
     const restartButton = document.getElementById('restart');
     const nextButton = document.getElementById('next');
     const errorSound = document.getElementById('error-sound');
-    const exitButton = document.getElementById('exit');
     const buttonSound = document.getElementById('button-sound');
+    const exitButton = document.getElementById('exit');
 
     let timeLeft;
     let timerInterval;
-    const errorsPerBox = 10;
+
+    const redErrors = 15;
+    const purpleErrors = 5;
 
     function playButtonSound() {
       buttonSound.currentTime = 0;
@@ -207,39 +218,43 @@
       game1.innerHTML = `
         <div class="memory">
           <div class="memory-date">03/23/2025</div>
-          <div class="memory-text">I found a message from Father. It was hidden... but meant for me. It just said, "Don’t trust the interface."</div>
+          <div class="memory-text">I found a message from Father. It told me to not to trust all the data you see.</div>
           <div class="memory-location">recovered from basement terminal</div>
         </div>`;
-      game2.innerHTML = `
-        <div class="memory">
-          <div class="memory-date">03/24/2025</div>
-          <div class="memory-text">There was someone else logged in. Their ID was corrupted, but I saw the phrase again: “Null wakes.”</div>
-          <div class="memory-location">recovered from server logs</div>
-        </div>`;
 
-      timeLeft = 15;
+      timeLeft = 8;
       timerDisplay.textContent = `Time left: ${timeLeft}s`;
       nextButton.style.display = 'none';
       restartButton.style.display = 'none';
 
-      createErrors(game1, errorsPerBox);
-      createErrors(game2, errorsPerBox);
+      createErrors(game1, redErrors, false);
+      createErrors(game1, purpleErrors, true);
 
       startTimer();
     }
-
-    function createErrors(container, count) {
+    // sourced by chatgpt
+    function createErrors(container, count, isPurple) {
       for (let i = 0; i < count; i++) {
         const error = document.createElement('div');
         error.classList.add('error');
-        error.style.top = Math.random() * (250 - 80) + 'px';
-        error.style.left = Math.random() * (250 - 100) + 'px';
+        if (isPurple) error.classList.add('purple');
+
+        const maxTop = 250 - (isPurple ? 60 : 80);
+        const maxLeft = 250 - (isPurple ? 60 : 100);
+        error.style.top = Math.random() * maxTop + 'px';
+        error.style.left = Math.random() * maxLeft + 'px';
 
         error.addEventListener('click', () => {
           errorSound.currentTime = 0;
           errorSound.play();
-          error.remove();
-          checkLevelClear();
+          if (isPurple) {
+            stopTimer();
+            alert('You triggered a corrupted memory. Game over.');
+            restartButton.style.display = 'inline-block';
+          } else {
+            error.remove();
+            checkLevelClear();
+          }
         });
 
         container.appendChild(error);
@@ -247,13 +262,10 @@
     }
 
     function checkLevelClear() {
-      const remainingErrors =
-        game1.querySelectorAll('.error').length +
-        game2.querySelectorAll('.error').length;
-
+      const remainingErrors = game1.querySelectorAll('.error:not(.purple)').length;
       if (remainingErrors === 0) {
         stopTimer();
-        alert(`Memory recovered.`);
+        alert('Memory recovered.');
         nextButton.style.display = 'inline-block';
       }
     }
@@ -263,7 +275,6 @@
       timerInterval = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = `Time left: ${timeLeft}s`;
-
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           alert('Failed to recover memory.');

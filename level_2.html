@@ -4,8 +4,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>Level 2</title>
-  
+
   <style>
+    @font-face {
+      font-family: "shareTech";
+      src: url(assets/sharetech-mono/ShareTechMono-Regular.ttf);
+    }
+
     body {
       display: flex;
       flex-direction: column;
@@ -26,9 +31,10 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      font-size: 22px;
+      font-size: 37px;
       margin-left: 5px;
-      font-family: monospace;
+      font-family: "shareTech";
+      color: red;
     }
 
     .level-label {
@@ -38,7 +44,7 @@
       font-size: 22px;
       color: #ffffff;
       margin-right: 5px;
-      font-family: monospace;
+      font-family: "shareTech";
     }
 
     .game-wrapper {
@@ -62,7 +68,7 @@
       height: 100%;
       background-color: #c4c4c4;
       color: #000000;
-      font-family: monospace;
+      font-family: "shareTech";
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -115,7 +121,7 @@
       color: #d0d0d0;
       padding: 12px 36px;
       font-size: 1.2rem;
-      font-family: monospace;
+      font-family: "shareTech";
       cursor: pointer;
       transition: background 0.3s, color 0.3s, transform 0.3s;
       text-decoration: none;
@@ -148,7 +154,7 @@
     }
 
     p {
-      font-family: monospace;
+      font-family: "shareTech";
       font-size: 20px;
     }
   </style>
@@ -166,14 +172,15 @@
     <div class="game-container" id="game1">
       <div class="memory">
         <div class="memory-date">03/21/2080</div>
-        <div class="memory-text">They laughed when I spoke up. I didn’t know what I did wrong.</div>
+        <div class="memory-text">Some guys at the back laughed when I spoke up. I didn’t know what I did wrong.</div>
         <div class="memory-location">found in school</div>
       </div>
     </div>
     <div class="game-container" id="game2">
       <div class="memory">
         <div class="memory-date">03/22/2080</div>
-        <div class="memory-text">The teacher looked at me, then looked away. That silence was louder than yelling.</div>
+        <div class="memory-text">The teacher announced there was a deadly illness spreading among our town. I noticed
+          the guys at the back didn't come to school today.</div>
         <div class="memory-location">found in school</div>
       </div>
     </div>
@@ -216,13 +223,13 @@
       game1.innerHTML = `
         <div class="memory">
           <div class="memory-date">03/21/2080</div>
-          <div class="memory-text">They laughed when I spoke up. I didn’t know what I did wrong.</div>
+          <div class="memory-text">Some guys at the back laughed when I spoke up. I didn’t know what I did wrong.</div>
           <div class="memory-location">found in school</div>
         </div>`;
       game2.innerHTML = `
         <div class="memory">
           <div class="memory-date">03/22/2080</div>
-          <div class="memory-text">The teacher looked at me, then looked away. That silence was louder than yelling.</div>
+          <div class="memory-text">The teacher announced there was a deadly illness spreading among our town. I noticed the guys at the back didn't come to school today.</div>
           <div class="memory-location">found in school</div>
         </div>`;
 
@@ -237,6 +244,7 @@
       startTimer();
     }
 
+    // sourced by chatgpt
     function createErrors(container, count) {
       for (let i = 0; i < count; i++) {
         const error = document.createElement('div');

@@ -6,6 +6,11 @@
   <title>Level 1</title>
 
   <style>
+    @font-face {
+      font-family: "shareTech";
+      src: url(assets/sharetech-mono/ShareTechMono-Regular.ttf);
+    }
+
     body {
       display: flex;
       flex-direction: column;
@@ -28,9 +33,10 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      font-size: 22px;
+      font-size: 37px;
       margin-left: 5px;
-      font-family: monospace;
+      font-family: "shareTech";
+      color: red;
     }
 
     .level-label {
@@ -40,7 +46,7 @@
       font-size: 22px;
       color: #ffffff;
       margin-right: 5px;
-      font-family: monospace;
+      font-family: "shareTech";
     }
 
     .game-wrapper {
@@ -63,7 +69,7 @@
       height: 100%;
       background-color: #c4c4c4;
       color: #000000;
-      font-family: monospace;
+      font-family: "shareTech";
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -129,7 +135,7 @@
       color: #d0d0d0;
       padding: 12px 36px;
       font-size: 1.2rem;
-      font-family: monospace;
+      font-family: "sharetech";
       cursor: pointer;
       transition: background 0.3s, color 0.3s, transform 0.3s;
       text-decoration: none;
@@ -149,7 +155,7 @@
     }
 
     p {
-      font-family: monospace;
+      font-family: "shareTech";
       font-size: 20px;
     }
   </style>
@@ -218,6 +224,7 @@
       nextButton.style.display = 'none';
       restartButton.style.display = 'none';
 
+      // sourced by chatgpt
       for (let i = 0; i < errorCount; i++) {
         const error = document.createElement('div');
         error.classList.add('error');

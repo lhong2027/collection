@@ -1,4 +1,9 @@
 
+@font-face {
+  font-family: "shareTech";
+  src: url(assets/sharetech-mono/ShareTechMono-Regular.ttf);
+}
+
 body {
   background-color: black;
   display: flex;
@@ -36,7 +41,7 @@ body::before {
 
 #header {
   color: #e0e0e0;
-  font-family: monospace;
+  font-family: "shareTech";
   font-size: 50px;
   letter-spacing: 0.12em;
   margin-bottom: 100px;
@@ -70,7 +75,7 @@ button {
   color: #d0d0d0;
   padding: 12px 36px;
   font-size: 1.2rem;
-  font-family: monospace;
+  font-family: "shareTech";
   cursor: pointer;
   transition: background 0.3s, color 0.3s, transform 0.3s;
 }

@@ -14,14 +14,15 @@
 <div id="buttons">
     <button onclick="fadeAndGo('game.html')">START</button>
     <button onclick="openCredits()">CREDITS</button>
-    <button onclick="closeWindow()">EXIT</button>
+
 </div>
 
 <audio id="bgm" src="assets/mainTitle.mp3" autoplay loop></audio>
 <audio id="button-sound" src="assets/button.mp3" preload="auto"></audio>
 
 <script>
-// letter scramble sourced by chatgpt
+
+//sourced by chatgpt
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const target = `DATA COLLECTION`;
 const header = document.getElementById("header");
@@ -56,6 +57,7 @@ const interval = setInterval(() => {
   }
 }, 60);  
 
+// sourced by chatgpt
 function fadeAndGo(url) {
   document.body.classList.add('fade-out');
   setTimeout(() => {
@@ -63,22 +65,17 @@ function fadeAndGo(url) {
   }, 1000); 
 }
 
-function closeWindow() {
-  window.close();
-}
 
 function openCredits() {
   window.open("https://docs.google.com/document/d/1vxXXRAS_e-ZgvRyMysbALg3fj_vSYleZ6mGhx1wM6Ww/edit?usp=sharing", "_blank");
 }
 
-// Button sound effect
 function playButtonSound() {
   const sound = document.getElementById('button-sound');
   sound.currentTime = 0;
   sound.play();
 }
 
-// Attach sound to all button clicks
 document.querySelectorAll('button').forEach(button => {
   button.addEventListener('click', playButtonSound);
 });
